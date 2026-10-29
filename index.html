@@ -142,7 +142,7 @@ return '<div class="card"><h2>Registrar una salida</h2><label>Fecha de salida</l
 function pkg(){var pp=S.prod.filter(function(x){return x.id==$("dp").value})[0],m=$("dm").value,o=$("dop").value,p=pname($("dp").value),k=PK[m]&&PK[m][o],h="";if(k){h=Object.keys(k).map(function(n){return n+" × "+k[n]}).join(" · ");if(k[p])$("dt").value=k[p]}$("dh").textContent=(k?"Paquete "+m+(MP[m]?" ("+MP[m].toLocaleString("es-CO")+" puntos)":"")+", opción "+o+": "+h:"")+(pp&&pp.nodisc?" · Este producto no aplica descuento.":"")}
 function fillP(){var p=S.people[v("dd")];if(!p)return;$("dn").value=p.n;$("dtd").value=p.td;$("dcel").value=p.cel;$("dem").value=p.em;$("dsp").value=p.sp;$("dc").value=p.city;$("ddp").value=p.dep;$("ddom").value=p.dom;toast("Datos de "+p.n+" cargados.")}
 function doDes(){
-var n=v("dn"),doc=v("dd"),pid=v("dp"),q=+v("dq"),t=+v("dt")||q,gift=v("dgf")=="1";
+var n=v("dn"),doc=v("dd"),pid=v("dp"),q=+v("dq"),t=+v("dt")||q,gift=v("dgf")=="1"||v("dm")=="Obsequio";
 if(!n||!(q>0))return toast("Escribe el nombre y las cajas que se lleva.");
 if(t<q)return toast("El total del pedido no puede ser menor a lo que se lleva ahora.");
 var al=alloc(pid,q);if(!al)return toast("No alcanza el stock vigente: hay "+stock(pid)+" cajas disponibles de "+pname(pid)+".");
@@ -559,6 +559,12 @@ function salidaCard(){if(!S.lots.length)return"";return'<div class="card"><h2>Sa
 function salidaBod(){var l=lotById(v("sb1")),q=+v("sb2");if(!l||!(q>0))return toast("Elige el lote y las cajas.");if(q>avail(l))return toast("En ese lote solo hay "+avail(l)+" cajas.");
 S.adj.push({id:uid(),lot:l.id,q:q,mot:"Salida bodega Prados del Norte",note:v("sb3")+(v("sb4")?" · "+v("sb4"):""),date:v("sb5")||today()});save();lg("Salida de bodega Prados del Norte",pname(l.pid)+" · lote "+(l.lote||"-")+" × "+q+" · "+v("sb3"));toast(q+" cajas salieron de la bodega ("+v("sb3")+").");render()}
 var _vInv9=vInv;vInv=function(){return _vInv9()+salidaCard()};
+
+/* v9b: Obsequio como opción de membresía */
+function addObs(){if(S.mem&&!("Obsequio" in S.mem)){S.mem["Obsequio"]=0;save()}}
+addObs();
+var _pkg9=pkg;pkg=function(){_pkg9();var m=$("dm"),g=$("dgf");if(m&&g&&m.value=="Obsequio")g.value="1"};
+var _render9b=render;render=function(){addObs();_render9b()};
 
 render();
 </script></body></html>
